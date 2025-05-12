@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#startingWindow {
+    width: 500px;
+    height: 300px;
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+#frontPage,
+#difficultyPage {
+    display: flex;
+    position: absolute;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    height: inherit;
+    width: inherit;
+    text-align: center;
+    color: white;
+}
+
+#frontPage {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+#difficultyPage {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    /* background-color: #39ff14; */
+}
+
+/* #welcome {
+    font-size: 40px;
+    font-weight: bold;
+} */
+
+.headerText {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.btn {
+    width: 200px;
+    height: 50px;
+    font-size: 24px;
+    border: none;
+    font-weight: bold;
+    border-radius: 12px;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #fff;
+    color: white;
+    transition: background-color 0.4s ease;
+}
+
+.btn:hover {
+    /* background-color: #39ff14; */
+    cursor: pointer;
+    transform: scale(1.05);
+    color: white;
+    box-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14;
+}
+
+.btn.active {
+    background-color: #fd7e14;
+    pointer-events: none;
+}
+
+#returnContainer,
+#exitContainer {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 80%;
+    right: 15%;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #fff;
+}
+
+#returnbtn,
+#exitbtn {
+    width: 90%;
+    height: 90%;
+    background: none;
+    border: none;
+    background-image: url("./assets/return-button.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: invert(1);
+}
+
+#exitContainer {
+    top: 0;
+    right: 0;
+}
+
+#exitbtn {
+    background-image: url("./assets/close.png");
+    background-size: calc(100% - 6px);
+}
+#exitContainer:hover {
+    background-color: red;
+}
+
+#gameContainer {
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
+    /* border: 1px solid rgb(113, 113, 113); */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+.gameHeader {
+    position: relative;
+}
+
+.game {
+    display: grid;
+    gap: 10px;
+}
+
+#gameContainer.easy .game {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+#gameContainer.medium .game {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+#gameContainer.hard .game {
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+}
+
+.tile {
+    width: 100%; /* Keeps tiles square */
+    border: 2px solid white;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding: 5px; */
+}
+
+.tile:hover {
+    box-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    #gameContainer {
+        width: 80%;
+        height: 90vh;
+    }
+
+    #gameContainer.easy .game {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+
+    #gameContainer.medium .game {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    #gameContainer.hard .game {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+    }
+}
+
+.tileText {
+    color: white;
+    font-size: 2em;
+}
