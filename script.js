@@ -153,7 +153,8 @@ function createGame(difficulty) {
     const container = newElement("div", null, "gameContainer", null, {}, {});
     const startingWindow = document.getElementById("startingWindow");
 
-    applyStyle(startingWindow, { position: "absolute" });
+    applyStyle(startingWindow, { position: "absolute",
+pointerEvents: "none" });
     document.body.appendChild(container);
 
     const header = newElement("div", "gameHeader");
