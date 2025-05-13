@@ -2,12 +2,18 @@ import { newElement, applyStyle, applyAttrib } from "./utils.js";
 
 
 let currentDifficult = "easy";
+let canClick = true;
 
 document.querySelectorAll('.btn').forEach(btn => {
     btn.addEventListener("click", () => {
         const menu = document.getElementById("startingWindow");
+        const frontPage = document.getElementById("frontPage");
         if (btn.id == "play") {
             applyStyle(menu, {
+                opacity: "0",
+                pointerEvents: "none"
+            });
+            applyStyle(frontPage, {
                 opacity: "0",
                 pointerEvents: "none"
             });
@@ -23,6 +29,8 @@ document.querySelectorAll('.btn').forEach(btn => {
             setTimeout(() => {
                 fadeInOut(startAlert, 5, 500);
             }, 500);
+
+
         }
         else if (btn.id == "difficulty") {
             let difficultyContainer = document.getElementById("difficultyPage")
@@ -150,6 +158,7 @@ function fadeInOut(element, times, interval,) {
 }
 
 function createGame(difficulty) {
+    console.log("create game function called");
     const container = newElement("div", null, "gameContainer", null, {}, {});
     const startingWindow = document.getElementById("startingWindow");
 
@@ -183,6 +192,10 @@ function createGame(difficulty) {
             container.remove();
             applyStyle(startingWindow, {
                 opacity: "",
+                pointerEvents: "all"
+            })
+            applyStyle(frontPage, {
+                opacity: "1",
                 pointerEvents: "all"
             })
         }, 400);
@@ -219,23 +232,55 @@ function createGame(difficulty) {
     }, 500);
 }
 
-const availableName = {
-    "red": 2,
-    "blue": 2,
-    "green": 2
-};
-
 function arrangeCards(difficulty) {
+
+    let availableName;
+    if (difficulty == "easy") {
+        availableName = {
+            "red": 2,
+            "blue": 2,
+            "green": 2
+        };
+    }
+    else if (difficulty == "medium") {
+        availableName = {
+            "red": 2,
+            "blue": 2,
+            "green": 2,
+            "yellow": 2,
+            "orange": 2,
+            "purple": 2
+        };
+    }
+    else if (difficulty == "hard") {
+        availableName = {
+            "red": 2,
+            "blue": 2,
+            "green": 2,
+            "yellow": 2,
+            "orange": 2,
+            "purple": 2,
+            "black": 2,
+            "pink": 2,
+            "gold": 2,
+            "silver": 2,
+            "white": 2,
+            "peach": 2
+        };
+    }
+
     const keys = Object.keys(availableName);
     let tileNo = 1;
-    document.querySelectorAll('.tile').forEach(tile => {
-        if(tile.hasChildNodes()) return;
+    const tiles = document.querySelectorAll('.tile');
+
+    tiles.forEach(tile => {
+        if (tile.hasChildNodes()) return;
         let assigned = false;
 
-        while(!assigned) {
+        while (!assigned) {
             const randomIndex = Math.floor(Math.random() * keys.length)
             const randomKey = keys[randomIndex];
-            
+
             if (availableName[randomKey] > 0) {
                 const text = newElement("p", "tileText", null, randomKey);
                 tile.appendChild(text);
@@ -245,56 +290,71 @@ function arrangeCards(difficulty) {
                 tileNo++;
                 assigned = true;
             }
-            
-            if(Object.values(availableName).every(v => v === 0)) break;
-        }
-        tile.addEventListener("click", (e)=> {
-            let clickedTile = e.target;
-            
-            if(!clickedTile.classList.contains('tile'))
-            {
-                clickedTile = clickedTile.closest('.tile');
-            }
 
-            if(clickedTile)
-            {
-                checkTile(tile, clickedTile.classList);
-            }
-        });
+            if (Object.values(availableName).every(v => v === 0)) break;
+        }
     })
+    setTimeout(() => {
+        tiles.forEach(tile => {
+            tile.classList.add("flip");
+
+            tile.addEventListener("click", (e) => {
+                if (!canClick) return;
+
+                canClick = false;
+                let clickedTile = e.target;
+                tile.classList.remove("flip");
+
+                if (!clickedTile.classList.contains('tile')) {
+                    clickedTile = clickedTile.closest('.tile');
+                }
+
+                if (clickedTile) {
+                    checkTile(tile, clickedTile.classList);
+                }
+
+                setTimeout(() => {
+                    canClick = true;
+                }, 600);
+            });
+        })
+    }, 3000);
+
 }
 
 let selectedTiles = {}
 
-function checkTile(element, clsList)
-{
+function checkTile(element, clsList) {
     const list = [...clsList];
     const className = list[1];
+    const unflippedTile = document.querySelectorAll(".tile:not(.flip):not(.done)");
 
-    if(!selectedTiles[className])
-    {
+    if (!selectedTiles[className]) {
         selectedTiles[className] = [];
     }
     selectedTiles[className].push(element.id);
 
-    
-    if(Object.keys(selectedTiles).length == 2)
-    {
+
+    if (Object.keys(selectedTiles).length == 2) {
         selectedTiles = {};
         console.log("selected tile of different name");
+        setTimeout(() => {
+            unflippedTile.forEach(tile => {
+                tile.classList.add("flip");
+            });
+        }, 800);
     }
-    else if(selectedTiles[className].length == 2)
-    {
+    else if (selectedTiles[className].length == 2) {
         console.log("selected the tile of same name");
         const tile0 = document.getElementById(selectedTiles[className][0]);
         const tile1 = document.getElementById(selectedTiles[className][1]);
         applyStyle(tile0, {
-            backgroundColor : "green",
-            pointerEvents : "none"
+            backgroundColor: "green",
+            pointerEvents: "none"
         })
         applyStyle(tile1, {
-            backgroundColor : "green",
-            pointerEvents : "none"
+            backgroundColor: "green",
+            pointerEvents: "none"
         })
 
         tile0.classList.add("done");
@@ -303,20 +363,19 @@ function checkTile(element, clsList)
         selectedTiles = {}
         checkGameEnd()
     }
-}  
+}
 
-function checkGameEnd()
-{
+function checkGameEnd() {
     let over = true;
     document.querySelectorAll('.tile').forEach(tile => {
-        if(!tile.classList.contains('done'))
-        {
+        if (!tile.classList.contains('done')) {
             over = false;
         }
     });
 
-    if(over)
-    {
-        console.log("Game completed");
+    if (over) {
+        setTimeout(()=> {
+            alert("Game completed");
+        }, 600);
     }
 }

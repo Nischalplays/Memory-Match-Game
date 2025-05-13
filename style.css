@@ -58,6 +58,9 @@ body {
 .headerText {
     font-size: 40px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn {
@@ -125,6 +128,7 @@ body {
     background-image: url("./assets/close.png");
     background-size: calc(100% - 6px);
 }
+
 #exitContainer:hover {
     background-color: red;
 }
@@ -141,8 +145,10 @@ body {
     opacity: 1;
     transition: opacity 0.4s ease;
 }
+
 .gameHeader {
     position: relative;
+    display: flex;
 }
 
 .game {
@@ -154,29 +160,53 @@ body {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
 }
+
 #gameContainer.medium .game {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
 }
+
 #gameContainer.hard .game {
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(4, 1fr);
 }
 
 .tile {
-    width: 100%; /* Keeps tiles square */
+    width: 100%;
+    /* Keeps tiles square */
     border: 2px solid white;
     background-color: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 80px;
+    min-height: 80px;
+    transform: rotateY(0);
+    transition: transform 0.6s ease;
     /* padding: 5px; */
 }
 
 .tile:hover {
     box-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14;
     cursor: pointer;
+}
+
+.tileText {
+    color: white;
+    font-size: 2em;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.tile.flip {
+    transform: rotateY(180deg);
+    transition: transform 0.6s ease;
+}
+
+.tile.flip .tileText {
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 @media (max-width: 768px) {
@@ -199,9 +229,40 @@ body {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(6, 1fr);
     }
+
+    .headerText {
+        font-size: 1.5em;
+    }
+
+    #exitContainer {
+        width: 20px;
+        height: 20px;
+    }
+
+    .tile {
+        min-width: 50px;
+        min-height: 50px;
+    }
+    .tileText {
+        font-size: 1.3em;
+    }
 }
 
-.tileText {
-    color: white;
-    font-size: 2em;
+@media (max-width: 300px) {
+    body {
+        justify-content: initial;
+    }
+
+    #gameContainer {
+        margin: 0;
+    }
+
+    .tile {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .tileText {
+        font-size: 1em;
+    }
 }
