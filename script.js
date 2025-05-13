@@ -3,6 +3,34 @@ import { newElement, applyStyle, applyAttrib } from "./utils.js";
 
 let currentDifficult = "easy";
 let canClick = true;
+let time = 0;
+let timeInterval;
+
+function startTimer() {
+    timeInterval = setInterval(() => {
+        time++;
+        updateTimerDisplay();
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const timerElement = document.getElementById("timer");
+    if (timerElement) {
+        const minutes = Math.floor(time / 60);
+        const second = time % 60;
+        timerElement.textContent = `${pad(minutes)}:${pad(second)}`;
+    }
+}
+
+function pad(num)
+{
+    return num.toString().padStart(2, "0");
+}
+
+function stopTimer()
+{
+    clearInterval(timeInterval);
+}
 
 document.querySelectorAll('.btn').forEach(btn => {
     btn.addEventListener("click", () => {
@@ -138,13 +166,13 @@ function fadeInOut(element, times, interval,) {
         element.style.opacity = "1";
         setTimeout(() => {
             if (count == (times - 1)) {
-                element.textContent = "Game Loaded Successfully.";
+                // element.textContent = "Game Loaded Successfully.";
                 setTimeout(() => {
                     element.style.opacity = "0";
                     createGame(currentDifficult);
                     setTimeout(() => {
                         element.remove();
-                    }, 200);
+                    }, 0);
 
                 }, interval + interval);
                 return;
@@ -158,12 +186,31 @@ function fadeInOut(element, times, interval,) {
 }
 
 function createGame(difficulty) {
-    console.log("create game function called");
+
+    // const gameContainer = document.getElementById("gameContainer");
+    // const overWindow = document.getElementById("gameOverContainer");
+    // if(gameContainer)
+    // {
+    //     gameContainer.remove();
+    // }
+    // if(overWindow)
+    // {
+    //     overWindow.remove();
+    // }
+
+    time = 0;
     const container = newElement("div", null, "gameContainer", null, {}, {});
     const startingWindow = document.getElementById("startingWindow");
 
-    applyStyle(startingWindow, { position: "absolute",
-pointerEvents: "none" });
+    applyStyle(startingWindow, {
+        position: "absolute",
+        pointerEvents: "none"
+    });
+
+    applyStyle(container, {
+        opacity: "1",
+        transition: "opacity 0.6s ease"
+    })
     document.body.appendChild(container);
 
     const header = newElement("div", "gameHeader");
@@ -171,6 +218,12 @@ pointerEvents: "none" });
         width: "100%",
         height: "15%",
     });
+
+    const timer = newElement("p", "headerText", "timer", "00:00");
+    applyStyle(timer, {
+        color: "white"
+    })
+    container.appendChild(timer);
 
     const text = newElement("p", "headerText", null, "Match The Similar Picture.", {}, {});
     applyStyle(text, {
@@ -319,8 +372,8 @@ function arrangeCards(difficulty) {
                 }, 600);
             });
         })
+        startTimer();
     }, 3000);
-
 }
 
 let selectedTiles = {}
@@ -375,8 +428,81 @@ function checkGameEnd() {
     });
 
     if (over) {
-        setTimeout(()=> {
-            alert("Game completed");
+        setTimeout(() => {
+            showGameOver();
+            stopTimer();
         }, 600);
     }
+}
+
+function showGameOver()
+{
+
+    const DOMtimerElement = document.getElementById("timer");
+    const container = document.getElementById("gameContainer");
+    applyStyle(container, {
+        pointerEvents: "none"
+    });
+
+    const gameOverContainer = newElement("div", null, "gameOver", null);
+    applyStyle(gameOverContainer, {
+        opacity: "1",
+        transition: "opacity 0.3s ease"
+    })
+    document.body.appendChild(gameOverContainer);
+
+    const maintext = newElement("p", "overTitle", null, "Game Completed🥳🥳"); 
+    gameOverContainer.appendChild(maintext);
+
+    const timetext = newElement("p", "timeText", null, `Time: ${DOMtimerElement.textContent}`); 
+    gameOverContainer.appendChild(maintext);
+    gameOverContainer.appendChild(timetext);
+
+    const buttonContainer = newElement("div", null, "buttonContainer");
+    gameOverContainer.appendChild(buttonContainer);
+
+    const retryBtn = newElement("button", "overBtn", "retry", null);
+    applyAttrib(retryBtn, {
+        textContent: "Rerty"
+    });
+
+    retryBtn.addEventListener("click", ()=>{
+        // gameOverContainer.remove();
+        // container.remove();
+        // createGame();
+    })
+
+    const exitBtn = newElement("button", "overBtn", "exit", null);
+    applyAttrib(exitBtn, {
+        textContent: "Exit"
+    });
+
+    exitBtn.addEventListener("click", ()=>{
+        applyStyle(gameOverContainer, {
+            opacity: "1",
+            pointerEvents: "none"
+        })
+        applyStyle(container, {
+            opacity: "1",
+            pointerEvents: "none"
+        })
+
+        setTimeout(()=>{
+            gameOverContainer.remove();
+            container.remove();
+            const startWindow = document.getElementById("startingWindow");
+            const frontElement = document.getElementById("frontPage");
+            applyStyle(startWindow, {
+                opacity: "1",
+                pointerEvents: "all"
+            });
+            applyStyle(frontElement, {
+                opacity: "1",
+                pointerEvents: "all"
+            });
+        }, 1000)
+    })
+
+    buttonContainer.appendChild(retryBtn);
+    buttonContainer.appendChild(exitBtn);
 }
