@@ -1,6 +1,5 @@
 import { newElement, applyStyle, applyAttrib } from "./utils.js";
 
-
 let currentDifficult = "easy";
 let canClick = true;
 
