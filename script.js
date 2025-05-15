@@ -1,9 +1,38 @@
-import { newElement, applyStyle, applyAttrib } from "./utils.js";
+import { newElement, applyStyle, applyAttrib, pad, changeTime, timeToSecond, saveData, loadData } from "./utils.js";
+
+let scoreGained = {
+    easy: {
+        type: {
+            text: "",
+            image: ""
+        }
+    },
+    medium: {
+        type: {
+            text: "",
+            image: ""
+        }
+    },
+    hard: {
+        type: {
+            text: "",
+            image: ""
+        }
+    }
+};
+
+const savedData = loadData();
+if (savedData) {
+    scoreGained = savedData;
+}
 
 let currentDifficult = "easy";
 let canClick = true;
 let time = 0;
 let timeInterval;
+let currentTime = 0;
+const difficulties = ["Easy", "Medium", "Hard"];
+
 
 function startTimer() {
     timeInterval = setInterval(() => {
@@ -21,13 +50,9 @@ function updateTimerDisplay() {
     }
 }
 
-function pad(num)
-{
-    return num.toString().padStart(2, "0");
-}
 
-function stopTimer()
-{
+
+function stopTimer() {
     clearInterval(timeInterval);
 }
 
@@ -137,6 +162,89 @@ document.querySelectorAll('.btn').forEach(btn => {
                 pointerEvents: "none"
             });
         }
+        else if (btn.id == "score") {
+            const scoreContainer = document.getElementById("scoreContainer");
+            if (!scoreContainer) {
+                const scorePage = newElement("div", null, "scoreContainer");
+
+                menu.append(scorePage);
+                setTimeout(() => {
+                    applyStyle(scorePage,{
+                        opacity: "1",
+                    })
+                }, 400);
+                applyStyle(frontPage, {
+                    opacity: "0",
+                    pointerEvents: "none"
+                });
+
+                const heading = newElement("p", "headerText", null, "Score");
+                scorePage.appendChild(heading);
+
+                for (let i = 0; i < difficulties.length; i++) {
+                    let currentDiff = difficulties[i];
+
+                    const diffHeading = newElement("div", "diffHeading", null);
+                    const vl = newElement("div", "vLine", null);
+                    const diffText = newElement("p", "diffText", null, difficulties[i]);
+                    const vl1 = newElement("div", "vLine", null);
+
+                    diffHeading.appendChild(vl)
+                    diffHeading.appendChild(diffText)
+                    diffHeading.appendChild(vl1)
+
+                    const scoreBasis = ["Text", "Animal Image"];
+                    const detailsContainer = newElement("div", "detailCont", difficulties[i]);
+
+                    const detialNameHolder = newElement("div", "nameHolder");
+                    const scoreTimeHolder = newElement("div", "nameHolder");
+                    for (let j = 0; j < scoreBasis.length; j++) {
+                        const detail = newElement("p", "detail", null, scoreBasis[j]);
+                        detialNameHolder.appendChild(detail);
+                    }
+
+                    const textScore = scoreGained[currentDiff.toLowerCase()]?.type?.text || "-";
+                    const imageScore = scoreGained[currentDiff.toLowerCase()]?.type?.image || "-";
+
+                    const textScoreElement = newElement("p", "detail", null, textScore);
+                    const imageScoreElement = newElement("p", "detail", null, imageScore);
+
+                    scoreTimeHolder.appendChild(textScoreElement);
+                    scoreTimeHolder.appendChild(imageScoreElement);
+
+                    detailsContainer.appendChild(detialNameHolder);
+                    detailsContainer.appendChild(scoreTimeHolder);
+
+                    scorePage.appendChild(diffHeading);
+                    scorePage.appendChild(detailsContainer);
+                }
+
+                const exitCont = newElement("div", "exitContainer", "exitCont");
+                const exitButton = newElement("div", "btn", "exitbtn");
+
+                exitButton.addEventListener("click", ()=>{
+                    applyStyle(scorePage, {
+                        opacity: "0",
+                        pointerEvents: "none",
+                        transition: "opacity 0.4s ease"
+                    })
+                    setTimeout(()=>{
+                        applyStyle(frontPage, {
+                            opacity: "1",
+                            pointerEvents: "all",
+                        });
+                        scorePage.remove();
+                    }, 400);
+                })
+
+                exitCont.appendChild(exitButton);
+                scorePage.appendChild(exitCont);
+
+
+                // const EasyDiffHeading = newElement
+
+            }
+        }
     })
 })
 
@@ -186,17 +294,7 @@ function fadeInOut(element, times, interval,) {
 
 function createGame(difficulty) {
 
-    // const gameContainer = document.getElementById("gameContainer");
-    // const overWindow = document.getElementById("gameOverContainer");
-    // if(gameContainer)
-    // {
-    //     gameContainer.remove();
-    // }
-    // if(overWindow)
-    // {
-    //     overWindow.remove();
-    // }
-
+    console.log(scoreGained);
     time = 0;
     const container = newElement("div", null, "gameContainer", null, {}, {});
     const startingWindow = document.getElementById("startingWindow");
@@ -368,7 +466,7 @@ function arrangeCards(difficulty) {
 
                 setTimeout(() => {
                     canClick = true;
-                }, 600);
+                }, 300);
             });
         })
         startTimer();
@@ -390,15 +488,13 @@ function checkTile(element, clsList) {
 
     if (Object.keys(selectedTiles).length == 2) {
         selectedTiles = {};
-        console.log("selected tile of different name");
         setTimeout(() => {
             unflippedTile.forEach(tile => {
                 tile.classList.add("flip");
             });
-        }, 800);
+        }, 600);
     }
     else if (selectedTiles[className].length == 2) {
-        console.log("selected the tile of same name");
         const tile0 = document.getElementById(selectedTiles[className][0]);
         const tile1 = document.getElementById(selectedTiles[className][1]);
         applyStyle(tile0, {
@@ -434,8 +530,7 @@ function checkGameEnd() {
     }
 }
 
-function showGameOver()
-{
+function showGameOver() {
 
     const DOMtimerElement = document.getElementById("timer");
     const container = document.getElementById("gameContainer");
@@ -450,12 +545,15 @@ function showGameOver()
     })
     document.body.appendChild(gameOverContainer);
 
-    const maintext = newElement("p", "overTitle", null, "Game Completed🥳🥳"); 
+    const maintext = newElement("p", "overTitle", null, "Game Completed🥳🥳");
     gameOverContainer.appendChild(maintext);
 
-    const timetext = newElement("p", "timeText", null, `Time: ${DOMtimerElement.textContent}`); 
+    const timetext = newElement("p", "timeText", null, `Time: ${DOMtimerElement.textContent}`);
     gameOverContainer.appendChild(maintext);
     gameOverContainer.appendChild(timetext);
+
+    // scoreGained[currentDifficult].type.text = changeTime(time);
+    // console.log(scoreGained);
 
     const buttonContainer = newElement("div", null, "buttonContainer");
     gameOverContainer.appendChild(buttonContainer);
@@ -465,10 +563,10 @@ function showGameOver()
         textContent: "Rerty"
     });
 
-    retryBtn.addEventListener("click", ()=>{
-        // gameOverContainer.remove();
-        // container.remove();
-        // createGame();
+    retryBtn.addEventListener("click", () => {
+        gameOverContainer.remove();
+        container.remove();
+        createGame(currentDifficult);
     })
 
     const exitBtn = newElement("button", "overBtn", "exit", null);
@@ -476,7 +574,7 @@ function showGameOver()
         textContent: "Exit"
     });
 
-    exitBtn.addEventListener("click", ()=>{
+    exitBtn.addEventListener("click", () => {
         applyStyle(gameOverContainer, {
             opacity: "1",
             pointerEvents: "none"
@@ -486,7 +584,7 @@ function showGameOver()
             pointerEvents: "none"
         })
 
-        setTimeout(()=>{
+        setTimeout(() => {
             gameOverContainer.remove();
             container.remove();
             const startWindow = document.getElementById("startingWindow");
@@ -501,7 +599,20 @@ function showGameOver()
             });
         }, 1000)
     })
-
+    currentTime = time;
     buttonContainer.appendChild(retryBtn);
     buttonContainer.appendChild(exitBtn);
+
+    updateScore(time);
+}
+
+function updateScore() {
+    const oldValue = scoreGained[currentDifficult].type.text;
+    const oldScore = oldValue ? timeToSecond(oldValue) : Infinity;
+
+    if (currentTime < oldScore) {
+        scoreGained[currentDifficult].type.text = changeTime(currentTime);
+    }
+
+    saveData(scoreGained);
 }

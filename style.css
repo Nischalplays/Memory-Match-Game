@@ -50,6 +50,63 @@ body {
     /* background-color: #39ff14; */
 }
 
+#scoreContainer {
+    width: 500px;
+    height: 400px;
+    background-color: #555;
+    border: 2px solid white;
+    border-radius: 20px;
+    position: absolute;
+    overflow: auto;
+    scrollbar-width: none;
+    scrollbar-color: #1fd70a #f1f1f1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.diffHeading {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.diffText {
+    color: white;
+    font-size: 2em;
+    width: fit-content;
+}
+
+.vLine {
+    height: 2px;
+    flex: 1px;
+    background-color: white;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 1px;
+}
+
+.detailCont {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+}
+
+.nameHolder {
+    width: fit-content;
+    /* padding- */
+    margin-left: 5px;
+
+}
+
+.detail {
+    color: white;
+    padding: 3px;
+    font-size: 1.5em;
+}
+
 /* #welcome {
     font-size: 40px;
     font-weight: bold;
@@ -61,6 +118,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 
 .btn {
@@ -122,6 +180,19 @@ body {
 #exitContainer {
     top: 0;
     right: 0;
+}
+
+#exitCont {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
 }
 
 #exitbtn {
@@ -201,7 +272,7 @@ body {
 
 .tile.flip {
     transform: rotateY(180deg);
-    transition: transform 0.6s ease;
+    transition: transform 0.3s ease;
 }
 
 .tile.flip .tileText {
@@ -226,11 +297,12 @@ body {
 }
 
 .overTitle {
-    font-size: 2em;;
-    color:white;
+    font-size: 2em;
+    ;
+    color: white;
 }
 
-#buttonContainer{
+#buttonContainer {
     width: 80%;
     height: fit-content;
     display: flex;
@@ -305,6 +377,7 @@ body {
         min-width: 50px;
         min-height: 50px;
     }
+
     .tileText {
         font-size: 1.3em;
     }

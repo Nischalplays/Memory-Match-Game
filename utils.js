@@ -76,3 +76,41 @@ export function toggleContainer(container, style = {}){
         })
     }
 }
+
+export function changeTime(time)
+{
+    let minute = Math.floor(time / 60);
+    let second = time % 60;
+
+    return `${pad(minute)}:${pad(second)}`;
+    
+}
+
+export function timeToSecond(timeStr)
+{
+    const [minute, second] = timeStr.split(":").map(Number);
+    return minute * 60 + second;
+}
+
+export function pad(num) {
+    return num.toString().padStart(2, "0");
+}
+
+export function saveData(data)
+{
+    localStorage.setItem("scoreData", JSON.stringify(data));
+}
+
+export function loadData()
+{
+    const savedData = JSON.parse(localStorage.getItem("scoreData"));
+
+    if(savedData)
+    {
+        return savedData;
+    }
+    else
+    {
+        return null;
+    }
+}
