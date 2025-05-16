@@ -50,8 +50,6 @@ function updateTimerDisplay() {
     }
 }
 
-
-
 function stopTimer() {
     clearInterval(timeInterval);
 }
@@ -169,7 +167,7 @@ document.querySelectorAll('.btn').forEach(btn => {
 
                 menu.append(scorePage);
                 setTimeout(() => {
-                    applyStyle(scorePage,{
+                    applyStyle(scorePage, {
                         opacity: "1",
                     })
                 }, 400);
@@ -222,13 +220,13 @@ document.querySelectorAll('.btn').forEach(btn => {
                 const exitCont = newElement("div", "exitContainer", "exitCont");
                 const exitButton = newElement("div", "btn", "exitbtn");
 
-                exitButton.addEventListener("click", ()=>{
+                exitButton.addEventListener("click", () => {
                     applyStyle(scorePage, {
                         opacity: "0",
                         pointerEvents: "none",
                         transition: "opacity 0.4s ease"
                     })
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         applyStyle(frontPage, {
                             opacity: "1",
                             pointerEvents: "all",
@@ -293,9 +291,8 @@ function fadeInOut(element, times, interval,) {
 }
 
 function createGame(difficulty) {
-
-    console.log(scoreGained);
     time = 0;
+    console.log(time);
     const container = newElement("div", null, "gameContainer", null, {}, {});
     const startingWindow = document.getElementById("startingWindow");
 
@@ -322,7 +319,7 @@ function createGame(difficulty) {
     })
     container.appendChild(timer);
 
-    const text = newElement("p", "headerText", null, "Match The Similar Picture.", {}, {});
+    const text = newElement("p", "headerText", null, "Match The Similar Tiles.");
     applyStyle(text, {
         width: "100%",
         height: "100%",
@@ -474,16 +471,27 @@ function arrangeCards(difficulty) {
 }
 
 let selectedTiles = {}
+let selectedId = [];
 
 function checkTile(element, clsList) {
     const list = [...clsList];
     const className = list[1];
     const unflippedTile = document.querySelectorAll(".tile:not(.flip):not(.done)");
+    const id = element.id;
+    selectedId.push(id);
+
+    // if (selectedId[i] == selectedId[i + 1]) {
+
+    // }
 
     if (!selectedTiles[className]) {
         selectedTiles[className] = [];
     }
+
+
+    if(element.id != selectedTiles[className][0])
     selectedTiles[className].push(element.id);
+
 
 
     if (Object.keys(selectedTiles).length == 2) {
@@ -551,9 +559,6 @@ function showGameOver() {
     const timetext = newElement("p", "timeText", null, `Time: ${DOMtimerElement.textContent}`);
     gameOverContainer.appendChild(maintext);
     gameOverContainer.appendChild(timetext);
-
-    // scoreGained[currentDifficult].type.text = changeTime(time);
-    // console.log(scoreGained);
 
     const buttonContainer = newElement("div", null, "buttonContainer");
     gameOverContainer.appendChild(buttonContainer);
